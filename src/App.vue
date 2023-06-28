@@ -1,4 +1,6 @@
 <script setup>
+import clickButton from "./components/buttoncomp.vue"
+
 const msg = 'Todo App';
 </script>
 
@@ -7,7 +9,7 @@ const msg = 'Todo App';
     {{ msg }}
   </h1>
   <div class ="flex mt-[10px]" >
-    
+    <clickButton/>
   </div>
 </template>
 
