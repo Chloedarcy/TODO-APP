@@ -1,9 +1,10 @@
 <script setup>
     import {ref} from "vue"
     const count = ref(0)
+    const props = defineProps(["name", "age"])
 </script>
 <template>
-    <button @click="count++">
-        click me: {{ count }}
+    <button>
+    <slot/> {{props.age}}<br>{{props.name}}
     </button>
 </template>
