@@ -1,10 +1,13 @@
 <script setup>
     import {ref} from "vue"
     const count = ref(0)
-    const props = defineProps(["name", "age"])
+    const props = defineProps(["task", "status"])
 </script>
 <template>
-    <button>
-    <slot/> {{props.age}}<br>{{props.name}}
+  <div class="border border-gray-300 rounded-lg p-4 inline-block">
+    <button class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <slot></slot>
+      {{ props.task }}<br>{{ props.status }}
     </button>
+  </div>
 </template>
