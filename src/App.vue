@@ -1,18 +1,36 @@
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const msg = 'Todo App';
 const text = ref('');
 const tasks = ref([])
+const form = ref({});
 
 function addTask() {
-  tasks.value.push(text.value)
-  text.value = " "
+  tasks.value = [...tasks.value, { task: text.value, checked: false }];
+  text.value = '';
+  saveStorage();
 }
 function deleteTask(index){
   tasks.value.splice(index, 1)
+  saveStorage();
 }
+
+function updateForm(input,value) {
+  form.value[input] = value;
+  saveStorage();
+}
+function openStorage () {
+  const storedTasks = localStorage.getItem('tasks');
+  return storedTasks ? JSON.parse(storedTasks) : [];
+}
+function saveStorage () {
+  localStorage.setItem('tasks', JSON.stringify(tasks.value));
+}
+onMounted(() => {
+  tasks.value = openStorage();
+});
 </script>
 
 <style>
@@ -61,7 +79,8 @@ function deleteTask(index){
 <template>
   <h1 class="title">{{ msg }}</h1>
   <div class="flex-container">
-    <input v-model="text" type="input" placeholder="Task here">
+    <input v-model="text" type="input" placeholder="Task here" 
+    @input="updateForm('task', $event.target.value)">
     <button
       class="addTaskButton"
       @click="addTask">Add Task</button>
@@ -69,11 +88,12 @@ function deleteTask(index){
 
   <div>
     <ul>
-      <li v-for="task in tasks" :key="task">
+      <li v-for="(task,index) in tasks" :key="index">
         <div class="flex-container">
-        <label v-if="task != ' '">
-          <input class="larger" type="checkbox" id="checkbox" v-model="task.checked">
-          {{ task }} 
+        <label v-if="task.task != ' '">
+          <input class="larger" type="checkbox" id="checkbox" v-model="task.checked"
+          @change="updateForm('checkbox', task.task.checked)">
+          {{ task.task }} 
           <button class="deleteButton"
           @click="deleteTask(index)">Delete</button>
         </label>
