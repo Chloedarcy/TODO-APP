@@ -6,9 +6,5 @@
 export default {
   props: ['addTask', 'buttonText'],
 }
-function addTask() {
-  tasks.value = [...tasks.value, { task: text.value, checked: false }];
-  text.value = '';
-  saveStorage();
-}
+
 </script>
