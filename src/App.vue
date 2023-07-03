@@ -7,6 +7,7 @@ const text = ref('');
 const tasks = ref([])
 const form = ref({});
 
+//Create functions and set up for local storage
 function addTask() {
   tasks.value = [...tasks.value, { task: text.value, checked: false }];
   text.value = '';
@@ -33,6 +34,7 @@ onMounted(() => {
 });
 </script>
 
+<!--set up styling-->
 <style>
 .title {
   display: flex;
@@ -78,6 +80,7 @@ onMounted(() => {
 </style>
 <template>
   <h1 class="title">{{ msg }}</h1>
+  <!--container containing the text box and add task button-->
   <div class="flex-container">
     <input v-model="text" type="input" placeholder="Task here" 
     @input="updateForm('task', $event.target.value)">
@@ -88,6 +91,8 @@ onMounted(() => {
 
   <div>
     <ul>
+      
+      <!--Adds a delete button and checkbox next to each task (seperatly linked)-->
       <li v-for="(task,index) in tasks" :key="index">
         <div class="flex-container">
         <label v-if="task.task != ' '">
