@@ -1,40 +1,60 @@
+<template>
+  <greet /> 
+  <h1 class="title">{{ msg }}</h1>
+
+  <!-- Container containing the text box and add task button -->
+  <div class="flex-container">
+    <input v-model="text" type="input" placeholder="Task here" @input="updateForm('task', $event.target.value)">
+    <button-comp :addTask="addTask" buttonText="Add Task" />
+  </div>
+
+  <div>
+    <ul>
+      <!-- Adds a delete button and checkbox next to each task (separately linked) -->
+      <task-item v-for="(task, index) in tasks" :key="index" :task="task" :index="index" @delete-task="deleteTask" @save-storage="saveStorage" />
+    </ul>
+  </div>
+</template>
 
 <script setup>
 import { ref, onMounted } from "vue";
+import ButtonComp from './components/buttonComp.vue';
+import taskItem from './components/taskItem.vue';
 
 const msg = 'Todo App';
 const text = ref('');
-const tasks = ref([])
+const tasks = ref([]);
 const form = ref({});
 
-//Create functions and set up for local storage
+// Create functions and set up for local storage
 function addTask() {
   tasks.value = [...tasks.value, { task: text.value, checked: false }];
+  saveStorage();
   text.value = '';
-  saveStorage();
 }
-function deleteTask(index){
-  tasks.value.splice(index, 1)
-  saveStorage();
-}
-
-function updateForm(input,value) {
+function updateForm(input, value) {
   form.value[input] = value;
   saveStorage();
 }
-function openStorage () {
+function deleteTask(index) {
+  tasks.value.splice(index, 1);
+  saveStorage();
+}
+function openStorage() {
   const storedTasks = localStorage.getItem('tasks');
   return storedTasks ? JSON.parse(storedTasks) : [];
 }
-function saveStorage () {
+
+function saveStorage() {
   localStorage.setItem('tasks', JSON.stringify(tasks.value));
 }
+
 onMounted(() => {
   tasks.value = openStorage();
 });
 </script>
 
-<!--set up styling-->
+<!-- Set up styling -->
 <style>
 .title {
   display: flex;
@@ -76,35 +96,4 @@ onMounted(() => {
   background-color: rgb(194, 14, 14);
 
 }
-
 </style>
-<template>
-  <h1 class="title">{{ msg }}</h1>
-  <!--container containing the text box and add task button-->
-  <div class="flex-container">
-    <input v-model="text" type="input" placeholder="Task here" 
-    @input="updateForm('task', $event.target.value)">
-    <button
-      class="addTaskButton"
-      @click="addTask">Add Task</button>
-  </div>
-
-  <div>
-    <ul>
-      
-      <!--Adds a delete button and checkbox next to each task (seperatly linked)-->
-      <li v-for="(task,index) in tasks" :key="index">
-        <div class="flex-container">
-        <label v-if="task.task != ' '">
-          <input class="larger" type="checkbox" id="checkbox" v-model="task.checked"
-          @change="updateForm('checkbox', task.task.checked)">
-          {{ task.task }} 
-          <button class="deleteButton"
-          @click="deleteTask(index)">Delete</button>
-        </label>
-      </div>
-    </li>
-    </ul>
-  </div>
-
-</template>
